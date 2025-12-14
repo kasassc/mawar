@@ -589,7 +589,7 @@
             <div class="carousel-wrap" id="main-carousel">
                 <button class="carousel-btn prev">❮</button>
                 <div class="carousel-track">
-                    <div class="slide"><img src="assets/photo_one.png" alt="With You ❤️"
+                    <div class="slide"><img src="assets/photo1.png" alt="With You ❤️"
                             onerror="this.parentNode.innerHTML='Imagine us here ❤️'"></div>
                     <div class="slide"><img src="assets/photo2.png" alt="My Love ✨"
                             onerror="this.parentNode.innerHTML='Just you & me ✨'"></div>
@@ -838,7 +838,7 @@
                 bgMusic.play().then(() => {
                     isPlaying = true;
                     musicBtn.textContent = 'Pause Music';
-                }).catch(e => alert("Please interact with document first (browser policy)."));
+                }).catch(e => alert("Audio Error: " + e.message + "\n(Try clicking the page first!)"));
             } else {
                 bgMusic.pause();
                 isPlaying = false;
