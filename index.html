@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- 
+    FOR MY LOVE - MAWAR
+    ===================
+    DEPLOYMENT:
+    1. Simply open this file in any web browser to view locally.
+    2. To share, upload this single file to Netlify Drop, GitHub Pages, or any static host.
+    
+    ASSETS TO REPLACE:
+    1. Photos: Search for 'assets/photo1.jpg', 'assets/photo2.jpg' in the code and replace with your image URLs.
+    2. Audio: Search for 'assets/soft-loop.mp3' and replace with your audio file.
+    
+    CUSTOMIZATION:
+    - Search for 'CONFIG' in the JavaScript section to change secret keys or typing speeds.
+-->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Forever, Mawar 🌹</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ffb7b2;
+            --accent: #ff69b4;
+            --bg: #1a0b0f;
+            --text: #f8f8f8;
+            --text-muted: #d0c0c0;
+            --glass: rgba(26, 11, 15, 0.85);
+            --card-bg: rgba(255, 183, 178, 0.05);
+            --font-head: 'Playfair Display', serif;
+            --font-body: 'Inter', sans-serif;
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Ambient Background Logic is handling via JS particles, but we add a gradient base */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, #2a1018 0%, #1a0b0f 100%);
+            z-index: -2;
+        }
+
+        /* Typography */
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: var(--font-head);
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+        }
+
+        h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 2rem;
+            color: var(--primary);
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            font-size: clamp(1rem, 1.2vw, 1.1rem);
+            color: var(--text-muted);
+        }
+
+        .script-font {
+            font-style: italic;
+        }
+
+        /* Utilities */
+        .container {
+            width: 100%;
+            max-width: 800px;
+            /* Cozy reading width for Laptop */
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .hidden {
+            display: none !important;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .flex-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        .btn:hover {
+            background: var(--primary);
+            color: var(--bg);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 183, 178, 0.2);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--bg);
+        }
+
+        /* Sections */
+        section {
+            padding: 5rem 0;
+            min-height: 80vh;
+            position: relative;
+        }
+
+        /* HEADER */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 1.5rem 0;
+            background: linear-gradient(to bottom, var(--bg), transparent);
+            transition: var(--transition);
+        }
+
+        header.scrolled {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-head);
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        /* HERO */
+        #hero {
+            height: 100vh;
+            /* Full screen mobile */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-title {
+            animation: fadeInMove 1.5s ease-out;
+            text-shadow: 0 0 20px rgba(255, 183, 178, 0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            margin-top: 1rem;
+            height: 2rem;
+            /* Keep layout stable for typewriter */
+            color: var(--accent);
+        }
+
+        .scroll-down {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            opacity: 0.7;
+        }
+
+        /* NEON GLOW */
+        .neon-text {
+            animation: pulse 3s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% {
+                text-shadow: 0 0 10px rgba(255, 183, 178, 0.2);
+            }
+
+            100% {
+                text-shadow: 0 0 25px rgba(255, 183, 178, 0.6), 0 0 50px rgba(255, 105, 180, 0.4);
+            }
+        }
+
+        /* STORY */
+        .story-card {
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 1s ease;
+        }
+
+        .story-card.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* THINGS I LOVE (Grid) */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .love-item {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            transition: var(--transition);
+        }
+
+        .love-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 183, 178, 0.1);
+        }
+
+        .love-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        /* CAROUSEL */
+        .carousel-wrap {
+            position: relative;
+            width: 100%;
+            height: 50vh;
+            /* Responsive height */
+            min-height: 400px;
+            max-height: 600px;
+            overflow: hidden;
+            border-radius: 20px;
+            margin: 2rem 0;
+            background: #000;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .carousel-track {
+            display: flex;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .slide {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            color: #555;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* The main clear image */
+        .slide img {
+            position: relative;
+            z-index: 2;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            transition: transform 0.5s ease;
+            transform: scale(0.95);
+        }
+
+        .slide.active img {
+            transform: scale(1);
+        }
+
+        /* The blurred background effect */
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: cover;
+            background-position: center;
+            filter: blur(20px) brightness(0.5);
+            z-index: 1;
+            /* We will set the background image via JS for this effect */
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem;
+            cursor: pointer;
+            z-index: 10;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        .carousel-btn:hover {
+            background: var(--primary);
+            color: #000;
+        }
+
+        .prev {
+            left: 1rem;
+        }
+
+        .next {
+            right: 1rem;
+        }
+
+        /* INTERACTIVE NOTE */
+        .note-generator {
+            background: var(--glass);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-top: 2rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        select {
+            padding: 0.8rem;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-family: var(--font-body);
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .note-display {
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: var(--font-head);
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-align: center;
+            padding: 2rem;
+            border: 1px dashed rgba(255, 183, 178, 0.3);
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        /* EASTER EGGS / ANIMATIONS */
+        .heart-particle {
+            position: fixed;
+            color: var(--primary);
+            font-size: 1.5rem;
+            pointer-events: none;
+            animation: floatUp 4s linear forwards;
+            z-index: 9999;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0) translateX(-50%);
+            }
+
+            40% {
+                transform: translateY(-20px) translateX(-50%);
+            }
+
+            60% {
+                transform: translateY(-10px) translateX(-50%);
+            }
+        }
+
+        @keyframes fadeInMove {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* MODAL */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background: #2a1018;
+            padding: 2rem;
+            border-radius: 20px;
+            max-width: 90%;
+            width: 500px;
+            text-align: center;
+            border: 1px solid var(--primary);
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 2rem;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* Easter Egg Hints */
+        .tiny-hint {
+            font-size: 0.7rem;
+            opacity: 0.3;
+            margin-top: 2rem;
+            cursor: help;
+            transition: opacity 0.3s;
+        }
+
+        .tiny-hint:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- AUDIO ELEMENT -->
+    <audio id="bg-music" loop>
+        <source src="assets/soft-loop.mp3" type="audio/mpeg">
+    </audio>
+
+    <header id="header">
+        <div class="container">
+            <nav>
+                <div class="logo">Mawar 🌹</div>
+                <button id="music-toggle" class="btn" style="padding: 0.5rem 1rem; font-size: 0.8rem;">Play
+                    Music</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="hero">
+        <div class="container">
+            <h1 class="hero-title neon-text">For My Forever,<br>Mawar 🌹</h1>
+            <div class="hero-subtitle script-font" id="typewriter"></div>
+            <p style="margin-top: 2rem;">From Hyderabad to Jakarta, miles never mattered.</p>
+            <a href="#our-story" class="btn btn-primary">Our Story</a>
+        </div>
+        <div class="scroll-down">↓</div>
+    </section>
+
+    <!-- STORY SECTION -->
+    <section id="our-story" class="flex-center">
+        <div class="container">
+            <div class="story-card reveal-on-scroll">
+                <h2 class="text-center">Our Journey</h2>
+                <p>
+                    Every day with you feels like a dream I never want to wake up from.
+                    You call me your big baby, I call you my wife.
+                    With every sunrise, I realize more and more that...
+                </p>
+                <h3 class="text-center script-font" style="color: var(--primary); margin: 2rem 0;">"Nuvvu naa
+                    jeevitham."</h3>
+                <p class="text-center">
+                    (You are my life.)
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CAROUSEL SECTION -->
+    <section id="photos">
+        <div class="container">
+            <h2 class="text-center">Captured Moments</h2>
+            <div class="carousel-wrap" id="main-carousel">
+                <button class="carousel-btn prev">❮</button>
+                <div class="carousel-track">
+                    <div class="slide"><img src="assets/photo_one.png" alt="With You ❤️"
+                            onerror="this.parentNode.innerHTML='Imagine us here ❤️'"></div>
+                    <div class="slide"><img src="assets/photo2.png" alt="My Love ✨"
+                            onerror="this.parentNode.innerHTML='Just you & me ✨'"></div>
+                    <div class="slide"><img src="assets/photo3.png" alt="Forever 🌹"
+                            onerror="this.parentNode.innerHTML='Forever ❤️'"></div>
+                    <div class="slide"><img src="assets/photo4.png" alt="Memories 💫"
+                            onerror="this.parentNode.innerHTML='Our memories 💫'"></div>
+                    <div class="slide"><img src="assets/photo5.png" alt="Happiness 😊"
+                            onerror="this.parentNode.innerHTML='Pure happiness 😊'"></div>
+                </div>
+                <button class="carousel-btn next">❯</button>
+            </div>
+            <p class="text-center tiny-hint" title="Try the Konami Code...">Tap if you truly love me 🤍</p>
+        </div>
+    </section>
+
+    <!-- THINGS I LOVE -->
+    <section id="reasons">
+        <div class="container">
+            <h2 class="text-center">Why I Love You</h2>
+            <div class="grid-2">
+                <div class="love-item reveal-on-scroll">
+                    <span class="love-icon">✨</span>
+                    <h4>Your Smile</h4>
+                    <p>It lights up my darkest days instantly.</p>
+                </div>
+                <div class="love-item reveal-on-scroll">
+                    <span class="love-icon">🦋</span>
+                    <h4>Your Spirit</h4>
+                    <p>Gentle yet strong, exactly what I need.</p>
+                </div>
+                <div class="love-item reveal-on-scroll">
+                    <span class="love-icon">🏠</span>
+                    <h4>My Home</h4>
+                    <p>Iyaaa sayang, with you I am home.</p>
+                </div>
+                <div class="love-item reveal-on-scroll">
+                    <span class="love-icon">🌏</span>
+                    <h4>Our Future</h4>
+                    <p>I can't wait for every tomorrow with you.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERACTIVE NOTE -->
+    <section id="love-note">
+        <div class="container">
+            <h2 class="text-center">My Note for You</h2>
+            <div class="note-generator reveal-on-scroll">
+                <div class="controls">
+                    <select id="mood-select">
+                        <option value="romantic">Mood: Just Romantic</option>
+                        <option value="funny">Mood: A Bit Silly</option>
+                        <option value="poetic">Mood: Deeply Poetic</option>
+                    </select>
+                    <select id="lang-select">
+                        <option value="en">English</option>
+                        <option value="te">Telugu (Script)</option>
+                        <option value="id">Indonesian</option>
+                    </select>
+                    <button class="btn btn-primary" id="generate-btn">Write for Me</button>
+                </div>
+
+                <div class="note-display" id="note-output">
+                    <span id="click-heart" style="cursor: pointer; font-size: 3rem;">❤️</span>
+                    <p style="margin-top: 1rem; font-size: 1rem;">Click 'Write for Me'...</p>
+                </div>
+
+                <div class="text-center">
+                    <button class="btn" id="download-btn">Send to Mawar (Save Image)</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="text-center">
+        <p>Built with love ❤️ by Pandu, for his Kasa Mawar</p>
+    </footer>
+
+    <!-- MODAL FOR HIDDEN LETTER (7 CLICKS) -->
+    <div class="modal" id="letter-modal">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <h3 style="color: var(--primary); margin-bottom: 1rem;">My Secret Vow</h3>
+            <p style="font-style: italic;">"From the moment I met you, I knew."</p>
+            <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 1.5rem 0;">
+            <p><strong>Iyaaa sayang</strong>,</p>
+            <p><strong>Nuvvu naa jeevitham.</strong></p>
+            <p><strong>Aku mencintaimu sayang Mawar.</strong></p>
+            <p style="margin-top: 2rem;">Forever, Pandu.</p>
+        </div>
+    </div>
+
+    <!-- SCRIPT -->
+    <script>
+        // CONFIG
+        const phrases = ["You are my peace.", "You are my home.", "Nuvvu naa jeevitham.", "Iyaaa sayang."];
+        const secretCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        const secretWord = "pandu";
+        let keyHistory = [];
+        let wordHistory = "";
+        let heartClicks = 0;
+
+        // DOM ELEMENTS
+        const typewriterEl = document.getElementById('typewriter');
+        const header = document.getElementById('header');
+        const musicBtn = document.getElementById('music-toggle');
+        const bgMusic = document.getElementById('bg-music');
+
+        // 1. TYPEWRITER EFFECT
+        let textIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+
+        function type() {
+            const current = phrases[textIndex];
+            if (isDeleting) {
+                typewriterEl.textContent = current.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typewriterEl.textContent = current.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let typeSpeed = isDeleting ? 50 : 100;
+
+            if (!isDeleting && charIndex === current.length) {
+                typeSpeed = 2000; // Pause at end
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                textIndex = (textIndex + 1) % phrases.length;
+                typeSpeed = 500;
+            }
+
+            setTimeout(type, typeSpeed);
+        }
+        document.addEventListener('DOMContentLoaded', type);
+
+        // 2. SCROLL EFFECTS
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) header.classList.add('scrolled');
+            else header.classList.remove('scrolled');
+
+            // Reveal elements
+            document.querySelectorAll('.reveal-on-scroll').forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 100) {
+                    el.classList.add('visible');
+                }
+            });
+        });
+
+        // 3. GENERATOR LOGIC
+        const notes = {
+            romantic: {
+                en: ["You are my sun and moon.", "Every heartbeat is for you.", "Forever is not enough."],
+                te: ["Nuvvu naa pranama.", "Ninnu preminchanu.", "Naa gundello nuvve."],
+                id: ["Aku sayang kamu.", "Cintaku selamanya.", "Kamulah segalanya."]
+            },
+            funny: {
+                en: ["You stole my heart (and my hoodies).", "I love you more than pizza.", "You're my favorite weirdo."],
+                te: ["Nuvvu naa drama queen.", "Naa food partner.", "Chinni mental."],
+                id: ["Kamu lucu banget.", "Sayang kamu poll.", "Jangan marah ya."]
+            },
+            poetic: {
+                en: ["In your eyes, I found my world.", "Love is a song we sing together.", "Two souls, one destiny."],
+                te: ["Nee navve naa prapancham.", "Prema oka payanam.", "Nee thodu naa needa."],
+                id: ["Matamu adalah duniaku.", "Cinta kita abadi.", "Jiwa kita menyatu."]
+            }
+        };
+
+        document.getElementById('generate-btn').addEventListener('click', () => {
+            const mood = document.getElementById('mood-select').value;
+            const lang = document.getElementById('lang-select').value;
+            // Basic random pick from structure above, mapped simply for demo
+            // To ensure specific requested lines appear we inject them sometimes
+            let lines = notes[mood][lang] || notes['romantic']['en'];
+
+            // Output
+            const outputEl = document.getElementById('note-output');
+            outputEl.innerHTML = `
+                <p>"${lines[0]}"</p>
+                <p>"${lines[1]}"</p>
+                <p style="margin-top:1rem; font-size:0.8rem">- Pandu</p>
+             `;
+
+            // Trigger hearts
+            createHeart(); createHeart(); createHeart();
+        });
+
+        // 4. HEART SPARKS
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart-particle');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.top = '100vh';
+            heart.style.animationDuration = Math.random() * 2 + 3 + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }
+        setInterval(createHeart, 2000); // Passive hearts
+
+        // 5. EASTER EGGS
+        // A) 7 Clicks
+        document.getElementById('click-heart').addEventListener('click', () => {
+            heartClicks++;
+            if (heartClicks === 7) {
+                document.getElementById('letter-modal').classList.add('active');
+                heartClicks = 0;
+            }
+        });
+        document.querySelector('.close-modal').addEventListener('click', () => {
+            document.getElementById('letter-modal').classList.remove('active');
+        });
+
+        // B) Konami Code & Word "PANDU"
+        document.addEventListener('keydown', (e) => {
+            // Konami
+            keyHistory.push(e.key);
+            if (keyHistory.length > secretCode.length) keyHistory.shift();
+            if (JSON.stringify(keyHistory) === JSON.stringify(secretCode)) {
+                alert("🎉 Konami Code Activated! Revealing Secrets...");
+                // Trigger confetti logic (simplified)
+                for (let i = 0; i < 50; i++) setTimeout(createHeart, i * 50);
+                document.getElementById('photos').scrollIntoView({ behavior: 'smooth' });
+            }
+
+            // Word PANDU
+            if (e.key.length === 1) { // Only letters
+                wordHistory += e.key.toLowerCase();
+                if (wordHistory.length > 5) wordHistory = wordHistory.slice(-5);
+                if (wordHistory === secretWord) {
+                    alert("🎤 Voice Message Easter Egg Triggered!\n(Playing placeholder audio...)");
+                    // If hidden audio existed: new Audio('secret.mp3').play();
+                }
+            }
+        });
+
+        // 6. AUDIO CONTROL
+        let isPlaying = false;
+        musicBtn.addEventListener('click', () => {
+            if (!isPlaying) {
+                bgMusic.play().then(() => {
+                    isPlaying = true;
+                    musicBtn.textContent = 'Pause Music';
+                }).catch(e => alert("Please interact with document first (browser policy)."));
+            } else {
+                bgMusic.pause();
+                isPlaying = false;
+                musicBtn.textContent = 'Play Music';
+            }
+        });
+
+        // 7. CAROUSEL
+        const track = document.querySelector('.carousel-track');
+        const slides = Array.from(track.children);
+        const nextBtn = document.querySelector('.next');
+        const prevBtn = document.querySelector('.prev');
+        let currentSlide = 0;
+
+        // Initialize: Set backgrounds + Active state
+        function initCarousel() {
+            slides.forEach((slide, index) => {
+                const img = slide.querySelector('img');
+                if (img) {
+                    // Set the slide background to the image source for the blur effect
+                    slide.style.backgroundImage = `url(${img.src})`;
+                    // Also need a pseudo-element rule, but inline styles on pseudo-elements are hard.
+                    // Instead, let's just use the style we added in CSS for the ::before to pick up a variable? 
+                    // Actually simpler: Just set the image as a separate div behind.
+
+                    const bg = document.createElement('div');
+                    bg.style.position = 'absolute';
+                    bg.style.top = '0'; bg.style.left = '0'; bg.style.width = '100%'; bg.style.height = '100%';
+                    bg.style.backgroundImage = `url(${img.src})`;
+                    bg.style.backgroundSize = 'cover';
+                    bg.style.backgroundPosition = 'center';
+                    bg.style.filter = 'blur(20px) brightness(0.6)';
+                    bg.style.zIndex = '1';
+                    slide.insertBefore(bg, img);
+                }
+                if (index === 0) slide.classList.add('active');
+            });
+        }
+        initCarousel();
+
+        function updateCarousel() {
+            track.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
+            // Update active class for animation
+            slides.forEach(s => s.classList.remove('active'));
+            slides[currentSlide].classList.add('active');
+        }
+        nextBtn.addEventListener('click', () => {
+            currentSlide = (currentSlide + 1) % slides.length;
+            updateCarousel();
+        });
+        prevBtn.addEventListener('click', () => {
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            updateCarousel();
+        });
+
+        // 8. CANVAS GENERATOR (SEND TO MAWAR)
+        document.getElementById('download-btn').addEventListener('click', () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 800;
+            canvas.height = 600;
+
+            // Bg
+            ctx.fillStyle = '#1a0b0f';
+            ctx.fillRect(0, 0, 800, 600);
+
+            // Border
+            ctx.strokeStyle = '#ffb7b2';
+            ctx.lineWidth = 10;
+            ctx.strokeRect(20, 20, 760, 560);
+
+            // Text
+            const noteContent = document.getElementById('note-output').innerText.split('\n').filter(l => l.trim());
+            ctx.fillStyle = '#fff';
+            ctx.font = '30px serif';
+            ctx.textAlign = 'center';
+
+            let y = 250;
+            noteContent.forEach(line => {
+                ctx.fillText(line, 400, y);
+                y += 50;
+            });
+
+            ctx.font = '20px sans-serif';
+            ctx.fillStyle = '#ffb7b2';
+            ctx.fillText("For My Forever, Mawar 🌹", 400, 500);
+
+            // Export
+            const link = document.createElement('a');
+            link.download = 'love-note-for-mawar.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
+
+    </script>
+</body>
+
+</html>
